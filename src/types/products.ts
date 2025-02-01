@@ -1,7 +1,7 @@
 export interface Product {
-  isNew: any;
-  discountPercentage: any;
-     productImage(productImage: any): unknown;
+  isNew?:string;
+  discountPercentage?: string;
+     productImage(productImage: string): unknown;
  _id: string;
  title : string;
  _type : "product";

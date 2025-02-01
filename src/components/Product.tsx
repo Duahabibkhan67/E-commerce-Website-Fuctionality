@@ -6,21 +6,19 @@ import { urlFor } from '@/sanity/lib/image';
 import { Product } from '@/types/products';
 import { addToCart } from '@/app/actions/actions';
 import Link from 'next/link'; 
-import { Skeleton } from "@/components/ui/skeleton"
-
-
-import Swal from 'sweetalert2'
+import { Skeleton } from "@/components/ui/skeleton";
+import Swal from 'sweetalert2';
 
 const ProductsPage = () => {
-  // Type the products state as an array of Product objects
+  
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState<boolean>(true); // Added loading state
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const query = '*[_type == "product"][0..7]'; // Query to fetch all products
-        const data = await client.fetch(query);
+        const query = '*[_type == "product"][0..7]'; 
+        const data: Product[] = await client.fetch(query); 
         setProducts(data);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -32,20 +30,18 @@ const ProductsPage = () => {
     fetchProducts();
   }, []);
 
-  const handleAddToCart = (e: React.MouseEvent, product: Product) => {
+  const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>, product: Product) => {
     e.preventDefault();
 
     Swal.fire({
       position: 'top-right',
       icon: 'success',
-      title : `${product.title} added to cart`,
-      showConfirmButton : false,
-      timer : 1000
+      title: `${product.title} added to cart`,
+      showConfirmButton: false,
+      timer: 1000
     });
     addToCart(product);
   };
-
-
 
   return (
     <div className='mx-9 overflow-hidden'>
@@ -88,7 +84,7 @@ const ProductsPage = () => {
                 )}
                 <button
                   className="bg-yellow-600 hover:bg-orange-500 text-white font-semibold py-1 px-2 rounded-sm shadow-md hover:shadow-lg hover:scale-110 transition-transform duration-200 ease-in-out"
-                  onClick={(e) => handleAddToCart(e, product)}
+                  onClick={(e) => handleAddToCart(e, product)} // Passing the event with specific type
                 >
                   Add To Cart
                 </button>
@@ -98,16 +94,12 @@ const ProductsPage = () => {
           ))
         )}
         <div className="justify-center items-center my-9 ">
-          <Link
-            href="/shop"
-            
-          >
-             <button
-                  className="border border-yellow-500 hover:bg-yellow-600  font-semibold py-1 px-2 rounded-sm shadow-md hover:shadow-lg hover:scale-110 justify-center items-center lg:ml-96 transition-transform duration-200 ease-in-out w-44 h-10"
-                  
-                >
-                Show More
-                </button>
+          <Link href="/shop">
+            <button
+              className="border border-yellow-500 hover:bg-yellow-600 font-semibold py-1 px-2 rounded-sm shadow-md hover:shadow-lg hover:scale-110 justify-center items-center lg:ml-96 transition-transform duration-200 ease-in-out w-44 h-10"
+            >
+              Show More
+            </button>
           </Link>
         </div>
       </div>
@@ -116,3 +108,33 @@ const ProductsPage = () => {
 };
 
 export default ProductsPage;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

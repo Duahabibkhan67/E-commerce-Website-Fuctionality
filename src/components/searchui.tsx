@@ -1,76 +1,93 @@
-
-import { useState, useEffect, } from 'react';
-
-// Define the type for a product
-interface Product {
-  title: string;
-  price: number;
-}
+// components/searchui.tsx
+import React, { useState } from 'react';
+import { Product } from '@/types/products';
 
 interface SearchAndFilterProps {
-  setFilteredProducts: (filtered: Product[]) => void;
   products: Product[];
+  setFilteredProducts: React.Dispatch<React.SetStateAction<Product[]>>;
 }
 
-const SearchAndFilter = ({ setFilteredProducts, products }: SearchAndFilterProps) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedPriceRange, setSelectedPriceRange] = useState('');
+const SearchAndFilter: React.FC<SearchAndFilterProps> = ({ products, setFilteredProducts }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [minPrice, setMinPrice] = useState<number>(0);
+  const [maxPrice, setMaxPrice] = useState<number>(1000); // you can set a reasonable max price
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
+  // Handle search input change
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
   };
 
-  const handlePriceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedPriceRange(e.target.value);
-  };
+  // Filter products based on search, category, and price range
+  const filterProducts = () => {
+    const filtered = products.filter((product) => {
+      const matchesTitle = product.title.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = selectedCategory
+        ? product.title.toLowerCase() === selectedCategory.toLowerCase()
+        : true;
+      const matchesPrice =
+        product.price >= minPrice && product.price <= maxPrice;
 
-  useEffect(() => {
-    let filtered = products;
-
-    if (searchQuery) {
-      filtered = filtered.filter((product) =>
-        product.title.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    if (selectedPriceRange) {
-      const [min, max] = selectedPriceRange.split('-').map((price) => (price === '500+' ? Infinity : Number(price)));
-      filtered = filtered.filter((product) => product.price >= min && product.price <= max);
-    }
+      return matchesTitle && matchesCategory && matchesPrice;
+    });
 
     setFilteredProducts(filtered);
-  }, [searchQuery, selectedPriceRange, products, setFilteredProducts]);
+  };
+
+  // Handle category and price range changes
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCategory(e.target.value);
+  };
+
+ 
+
+  // Call filter when any of the filters change
+  React.useEffect(() => {
+    filterProducts();
+  }, [searchTerm, selectedCategory, minPrice, maxPrice]);
 
   return (
-    <div className="flex flex-col sm:flex-row gap-4 mb-6 justify-between">
+    <div className="flex flex-col items-center mb-8">
       {/* Search Bar */}
-      <div className="flex flex-col sm:w-60 sm:ml-0 lg:ml-10 w-full">
+      <input
+        type="text"
+        value={searchTerm}
+        onChange={handleSearch}
+        placeholder="Search products"
+        className="p-2 border border-gray-300 rounded-md"
+      />
+      {/* Category Filter */}
+      <select
+        value={selectedCategory}
+        onChange={handleCategoryChange}
+        className="p-2 mt-4 border border-gray-300 rounded-md"
+      >
+        <option value="">All Categories</option>
+        {/* You can dynamically generate categories here */}
+        <option value="Electronics">Electronics</option>
+        <option value="Clothing">Clothing</option>
+        <option value="Accessories">Accessories</option>
+      </select>
+      {/* Price Range Filter */}
+      <div className="mt-4">
         <input
-          type="text"
-          placeholder="Search for products..."
-          value={searchQuery}
-          onChange={handleSearch}
-          className="border p-2 rounded-md w-full"
+          type="number"
+          value={minPrice}
+          onChange={(e) => setMinPrice(Number(e.target.value))}
+          placeholder="Min Price"
+          className="p-2 border border-gray-300 rounded-md mr-2"
         />
-      </div>
-
-      {/* Filters */}
-      <div className="flex gap-4 sm:w-1/2 w-full">
-        <select
-          value={selectedPriceRange}
-          onChange={handlePriceChange}
-          className="border p-2 rounded-md w-64"
-        >
-          <option value="">All Prices</option>
-          <option value="0-50">Under $50</option>
-          <option value="50-100">$50 - $100</option>
-          <option value="100-200">$100 - $200</option>
-          <option value="200-500">$200 - $500</option>
-          <option value="500+">Above $500</option>
-        </select>
+        <input
+          type="number"
+          value={maxPrice}
+          onChange={(e) => setMaxPrice(Number(e.target.value))}
+          placeholder="Max Price"
+          className="p-2 border border-gray-300 rounded-md"
+        />
       </div>
     </div>
   );
 };
 
 export default SearchAndFilter;
+
