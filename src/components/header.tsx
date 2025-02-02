@@ -2,7 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { TiThMenu } from "react-icons/ti";
 import React from "react";
-
+import { IoIosSearch } from "react-icons/io";
+import { FaRegHeart } from "react-icons/fa";
+import { FaCartShopping } from "react-icons/fa6";
 import {
  Sheet,
  SheetContent,
@@ -43,19 +45,13 @@ export default function Navbar() {
           
           </div>
           <div className="w-[28px] h-[28px] hover:scale-105 ">
-          <Link href="/searchbar"><Image height={60} width={60} src="/Vector3.png" alt="Wishlist" >
-
-</Image></Link> 
+          <Link href="/"><p className="h-28 w-28 font-bold"><IoIosSearch /></p></Link> 
           </div>  
           <div className="w-[28px] h-[28px] hover:scale-105 ">
-          <Link href="/wishlist"><Image height={60} width={60} src="/Vector4.png" alt="Wishlist" >
-
-</Image></Link> 
+          <Link href="/wishlist"><p className="h-28 w-28 font-bold"><FaRegHeart /></p></Link> 
           </div> 
-          <div className="w-[28px] h-[28px] hover:scale-105 sm:mr-16">
-           <Link href="/cart"><Image height={60} width={60} src="/Vector5.png" alt="Wishlist" >
-
-</Image></Link> 
+          <div className="w-[28px] h-[28px] hover:scale-105 mx-6">
+           <Link href="/cart"><p className="font-bold"><FaCartShopping/></p></Link> 
           </div> 
         </div>
   </div>
